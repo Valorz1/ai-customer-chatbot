@@ -55,8 +55,9 @@ public class KnowledgeBase {
             List<String> patterns = getPatterns(category);
 
             int matchCount = 0;
+            
             for (String pattern : patterns) {
-                if (input.contains(pattern)) {
+                if (input.matches(".*\\b" + pattern + "\\b.*")) {
                     matchCount++;
                 }
             }

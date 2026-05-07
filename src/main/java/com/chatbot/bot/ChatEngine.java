@@ -7,18 +7,21 @@ import java.util.Scanner;
 
 /**
  * Controls the conversation flow between the user and the chatbot.
- * Routes user input to the knowledge base and saves all messages to history.
+ * Routes user input to the knowledge base, falls back to AI for unknown queries,
+ * and saves all messages to history.
  */
 public class ChatEngine {
 
     private KnowledgeBase knowledgeBase;
     private ChatHistory chatHistory;
+    private AIService aiService;
     private boolean isRunning;
 
-    // Constructor: sets up the knowledge base, chat history, and starts the engine
+    // Constructor: sets up the knowledge base, chat history, starts the engine, AI Server.
     public ChatEngine() {
         this.knowledgeBase = new KnowledgeBase();
         this.chatHistory = new ChatHistory();
+        this.aiService = new AIService();
         this.isRunning = true;
     }
 
@@ -60,18 +63,19 @@ public class ChatEngine {
                 break;
             }
 
-            // Try to find a response from the knowledge base
+            // Try the knowledge base first
             String response = knowledgeBase.findResponse(userInput);
 
             if (response != null) {
+                // Knowledge base had an answer
                 System.out.println("Bot: " + response);
                 chatHistory.saveMessage("Bot", response);
             } else {
-                // No match found — fallback response for now
-                String fallback = "I'm not sure about that. Let me connect you with a human agent.";
-                System.out.println("Bot: " + fallback);
-                System.out.println("Bot: Is there anything else I can help with?");
-                chatHistory.saveMessage("Bot", fallback);
+                // No match — ask the AI for a response
+                System.out.println("Bot: Let me think about that...");
+                response = aiService.getResponse(userInput);
+                System.out.println("Bot: " + response);
+                chatHistory.saveMessage("Bot", response);
             }
         }
 
