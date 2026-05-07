@@ -1,0 +1,30 @@
+{
+  "greetings": {
+    "patterns": ["hello", "hi", "hey", "good morning", "good afternoon"],
+    "responses": ["Hello! How can I help you today?", "Hi there! What can I assist you with?"]
+  },
+  "farewells": {
+    "patterns": ["bye", "goodbye", "see you", "thanks bye", "quit"],
+    "responses": ["Goodbye! Have a great day!", "Thanks for chatting! Take care!"]
+  },
+  "order_status": {
+    "patterns": ["where is my order", "track order", "order status", "shipping update"],
+    "responses": ["Please provide your order number and I'll check the status for you.", "I can help track your order. What's your order number?"]
+  },
+  "returns": {
+    "patterns": ["return policy", "how to return", "refund", "exchange", "send back"],
+    "responses": ["Our return policy allows returns within 30 days of purchase. Would you like me to start a return for you?", "You can return any item within 30 days for a full refund. Do you need help with a specific return?"]
+  },
+  "payment": {
+    "patterns": ["payment methods", "how to pay", "credit card", "paypal", "billing"],
+    "responses": ["We accept Visa, Mastercard, PayPal, and bank transfers.", "You can pay using credit card, debit card, or PayPal. Is there a payment issue I can help with?"]
+  },
+  "hours": {
+    "patterns": ["opening hours", "when are you open", "business hours", "working hours"],
+    "responses": ["Our support team is available Monday to Friday, 9AM to 6PM GMT.", "We're open Monday through Friday, 9AM-6PM GMT. How can I help?"]
+  },
+  "contact": {
+    "patterns": ["contact support", "speak to human", "real person", "phone number", "email support"],
+    "responses": ["You can reach our support team at support@company.com or call 0800-123-456.", "I can connect you with a human agent. Would you like me to do that?"]
+  }
+}

@@ -33,7 +33,7 @@ public class KnowledgeBase {
     private void loadKnowledgeBase() {
         try {
             Reader reader = new InputStreamReader(
-                getClass().getClassLoader().getResourceAsStream("data/knowledge_base.json")
+            		getClass().getClassLoader().getResourceAsStream("knowledge_base.json")
             );
             this.data = new Gson().fromJson(reader, JsonObject.class);
             reader.close();
