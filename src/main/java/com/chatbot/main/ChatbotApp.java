@@ -1,20 +1,17 @@
 package com.chatbot.main;
 
-import com.chatbot.bot.ChatEngine;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * Entry point for the AI Customer Service Chatbot.
- * Initialises and starts the chat engine.
+ * Starts the Spring Boot web server.
  */
+@SpringBootApplication(scanBasePackages = "com.chatbot")
 public class ChatbotApp {
 
     public static void main(String[] args) {
-        System.out.println("Starting AI Customer Service Chatbot...\n");
-
-        // Create and start the chat engine
-        ChatEngine engine = new ChatEngine();
-        engine.start();
-
-        System.out.println("\nChatbot shut down. Thank you!");
+        SpringApplication.run(ChatbotApp.class, args);
+        System.out.println("Chatbot is running at http://localhost:8080");
     }
 }
