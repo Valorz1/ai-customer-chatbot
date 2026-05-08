@@ -684,37 +684,6 @@
     </div>
     <div class="bg-grid"></div>
 
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <div class="logo-row">
-                <div class="logo-icon">&#x2728;</div>
-                <div class="logo-text">
-                    <h1>Lumina AI</h1>
-                    <p>Customer Support v2.0</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="sidebar-nav">
-            <span class="nav-label">Main</span>
-            <div class="nav-item active">
-                <div class="nav-icon">&#x1F4AC;</div>
-                <span>Live Chat</span>
-                <span class="nav-badge">1</span>
-            </div>
-
-        <div class="sidebar-stats">
-            <div class="stat-card">
-                <div class="stat-icon">&#x26A1;</div>
-                <div class="stat-info">
-                    <p>Avg. Response Time</p>
-                    <h3 id="avgTime">~2s</h3>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Main Chat -->
     <div class="main-chat">
         <div class="chat-header">
@@ -948,48 +917,41 @@
             addMessage("Chat cleared! How can I help you?", 'bot');
         }
 
-        async function sendMessage() {
-            const text = userInput.value.trim();
-            if (!text) return;
+		async function sendMessage() {
+		            const text = userInput.value.trim();
+		            if (!text) return;
 
-            quickReplies.style.opacity = '0';
-            quickReplies.style.pointerEvents = 'none';
-            setTimeout(() => { quickReplies.style.display = 'none'; }, 300);
+		            quickReplies.style.opacity = '0';
+		            quickReplies.style.pointerEvents = 'none';
+		            setTimeout(() => { quickReplies.style.display = 'none'; }, 300);
 
-            addMessage(text, 'user');
-            userInput.value = '';
-            sendBtn.disabled = true;
+		            addMessage(text, 'user');
+		            userInput.value = '';
+		            sendBtn.disabled = true;
 
-            showTyping();
-            const startTime = Date.now();
+		            showTyping();
 
-            try {
-                const response = await fetch('/chat', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message: text })
-                });
+		            try {
+		                const response = await fetch('/chat', {
+		                    method: 'POST',
+		                    headers: { 'Content-Type': 'application/json' },
+		                    body: JSON.stringify({ message: text })
+		                });
 
-                const data = await response.json();
-                const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
-                responseTimes.push(parseFloat(elapsed));
+		                const data = await response.json();
+		                removeTyping();
+		                addMessage(data.response, 'bot');
+		                playSound();
 
-                const avg = (responseTimes.reduce((a,b) => a+b, 0) / responseTimes.length).toFixed(1);
-                document.getElementById('avgTime').textContent = '~' + avg + 's';
+		            } catch (error) {
+		                console.log('ERROR DETAILS:', error);
+		                removeTyping();
+		                addMessage('Sorry, something went wrong. Please try again.', 'bot');
+		            }
 
-                removeTyping();
-                addMessage(data.response, 'bot');
-                playSound();
-
-            } catch (error) {
-                removeTyping();
-                addMessage('Sorry, something went wrong. Please try again.', 'bot');
-                playSound();
-            }
-
-            sendBtn.disabled = false;
-            userInput.focus();
-        }
+		            sendBtn.disabled = false;
+		            userInput.focus();
+		        }
     </script>
 </body>
 </html>

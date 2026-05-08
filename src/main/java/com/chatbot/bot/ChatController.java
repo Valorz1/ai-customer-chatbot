@@ -2,14 +2,12 @@ package com.chatbot.bot;
 
 import com.chatbot.knowledge.KnowledgeBase;
 import com.chatbot.history.ChatHistory;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * REST controller that handles chat messages from the web interface.
@@ -21,9 +19,12 @@ public class ChatController {
     private KnowledgeBase knowledgeBase;
     private ChatHistory chatHistory;
     private AIService aiService;
+    private Gson gson;
 
     // Constructor: initializes all components
     public ChatController() {
+        this.gson = new Gson();
+
         try {
             this.knowledgeBase = new KnowledgeBase();
         } catch (Exception e) {
@@ -47,53 +48,56 @@ public class ChatController {
     }
 
     // Receives a message from the browser and returns a response
-    @PostMapping("/chat")
-    public Map<String, String> chat(@RequestBody Map<String, String> request) {
-        Map<String, String> result = new HashMap<>();
+    @PostMapping(value = "/chat", consumes = "application/json", produces = "application/json")
+    public String chat(@RequestBody String body) {
+        try {
+            // Parse the request manually with Gson
+            JsonObject request = gson.fromJson(body, JsonObject.class);
+            String userMessage = request.get("message").getAsString();
 
-        String userMessage = request.get("message");
+            // Validate input
+            if (userMessage == null || userMessage.trim().isEmpty()) {
+                return buildResponse("Please type something so I can help you.");
+            }
 
-        // Validate input
-        if (userMessage == null || userMessage.trim().isEmpty()) {
-            result.put("response", "Please type something so I can help you.");
-            return result;
+            // Save user message to history
+            if (chatHistory != null) {
+                chatHistory.saveMessage("User", userMessage);
+            }
+
+            // Try knowledge base first
+            String response = null;
+            if (knowledgeBase != null) {
+                response = knowledgeBase.findResponse(userMessage);
+            }
+
+            // Fall back to AI if no match
+            if (response == null && aiService != null) {
+                response = aiService.getResponse(userMessage);
+            }
+
+            // Final fallback
+            if (response == null) {
+                response = "I'm unable to help right now. Please email support@company.com.";
+            }
+
+            // Save bot response to history
+            if (chatHistory != null) {
+                chatHistory.saveMessage("Bot", response);
+            }
+
+            return buildResponse(response);
+
+        } catch (Exception e) {
+            System.out.println("Chat error: " + e.getMessage());
+            return buildResponse("Something went wrong. Please try again.");
         }
-
-        // Save user message to history
-        if (chatHistory != null) {
-            chatHistory.saveMessage("User", userMessage);
-        }
-
-        // Try knowledge base first
-        String response = null;
-        if (knowledgeBase != null) {
-            response = knowledgeBase.findResponse(userMessage);
-        }
-
-        // Fall back to AI if no match
-        if (response == null && aiService != null) {
-            response = aiService.getResponse(userMessage);
-        }
-
-        // Final fallback
-        if (response == null) {
-            response = "I'm unable to help right now. Please email support@company.com.";
-        }
-
-        // Save bot response to history
-        if (chatHistory != null) {
-            chatHistory.saveMessage("Bot", response);
-        }
-
-        result.put("response", response);
-        return result;
     }
 
-    // Returns recent chat history
-    @GetMapping("/history")
-    public Map<String, String> getHistory() {
-        Map<String, String> result = new HashMap<>();
-        result.put("message", "Chat history available");
-        return result;
+    // Builds a JSON response string
+    private String buildResponse(String message) {
+        JsonObject response = new JsonObject();
+        response.addProperty("response", message);
+        return gson.toJson(response);
     }
 }
