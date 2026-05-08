@@ -94,7 +94,7 @@ public class KnowledgeBase {
                 int matchCount = 0;
                 for (String pattern : patterns) {
                     if (input.matches(".*\\b" + pattern + "\\b.*")) {
-                        matchCount++;
+                    	matchCount += pattern.length();
                     }
                 }
 
