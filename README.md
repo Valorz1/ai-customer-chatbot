@@ -22,18 +22,16 @@ An AI-powered customer service chatbot built with Java, Spring Boot, and local A
 - **Frontend:** HTML, CSS, JavaScript
 - **Build Tool:** Maven
 
+```text
 ## Project Structure
 
 src/main/java/
 ├── com.chatbot.main
 │   └── Application entry point (Spring Boot)
-│
 ├── com.chatbot.bot
 │   └── Chat engine, AI service, REST controller
-│
 ├── com.chatbot.knowledge
 │   └── Knowledge base with JSON pattern matching
-│
 └── com.chatbot.history
     └── SQLite chat history storage
 
@@ -41,14 +39,13 @@ src/main/resources/
 ├── static/
 │   └── index.html
 │       └── Web-based chat interface
-│
 └── knowledge_base.json
     └── Q&A data for pattern matching
 
 src/test/java/
 └── com.chatbot.knowledge
     └── JUnit tests for knowledge base
-
+```
 ## Prerequisites
 
 - Java 17 or higher
